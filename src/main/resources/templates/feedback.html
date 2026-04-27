@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Submit Feedback</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <span class="brand">🎓 Campus Event Management</span>
+    <a th:href="@{/student/dashboard}">← Dashboard</a>
+</nav>
+
+<div class="container-sm">
+    <div class="card">
+        <h2>⭐ Submit Feedback</h2>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <form method="post" th:action="@{/student/feedback}">
+            <div class="form-group">
+                <label>Select Event</label>
+                <select name="eventName" class="form-control" required>
+                    <option value="">-- Select Event --</option>
+                    <option th:each="e : ${events}" th:value="${e.eventName}" th:text="${e.eventName}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Rating (1 to 5)</label>
+                <select name="rating" class="form-control" required>
+                    <option value="">-- Select Rating --</option>
+                    <option value="5">⭐⭐⭐⭐⭐ — Excellent (5)</option>
+                    <option value="4">⭐⭐⭐⭐ — Good (4)</option>
+                    <option value="3">⭐⭐⭐ — Average (3)</option>
+                    <option value="2">⭐⭐ — Poor (2)</option>
+                    <option value="1">⭐ — Very Poor (1)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Comments</label>
+                <textarea name="comments" class="form-control" rows="4"
+                          placeholder="Share your thoughts about the event..."></textarea>
+            </div>
+            <div style="display:flex; gap:12px; margin-top:8px;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">Submit Feedback</button>
+                <a th:href="@{/student/dashboard}" class="btn btn-secondary" style="flex:1; text-align:center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

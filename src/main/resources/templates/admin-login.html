@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <span class="brand">🎓 Campus Event Management</span>
+    <a th:href="@{/}">← Home</a>
+</nav>
+
+<div class="container-sm">
+    <div class="card">
+        <h2 style="text-align:center;">🔐 Admin Login</h2>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <form method="post" th:action="@{/admin/login}">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter username" required/>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter password" required/>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">Login</button>
+        </form>
+
+        <p style="text-align:center; margin-top:16px; font-size:0.85rem; color:#90a4ae;">
+            Default: admin / admin123
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

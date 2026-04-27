@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <span class="brand">🎓 Campus Event Management</span>
+    <div>
+        <span style="color:#c5cae9; font-size:0.9rem;" th:text="'Welcome, ' + ${student.name}"></span>
+        <a th:href="@{/student/feedback}">Feedback</a>
+        <a th:href="@{/student/logout}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-danger"  th:text="${error}"></div>
+
+    <!-- Student Info -->
+    <div class="card">
+        <h2>👤 My Profile</h2>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:12px;">
+            <div><strong>Reg No:</strong> <span class="badge badge-blue" th:text="${student.regNo}"></span></div>
+            <div><strong>Name:</strong>   <span th:text="${student.name}"></span></div>
+            <div><strong>Dept:</strong>   <span th:text="${student.dept}"></span></div>
+            <div><strong>Phone:</strong>  <span th:text="${student.phone}"></span></div>
+        </div>
+    </div>
+
+    <!-- Available Events -->
+    <div class="card">
+        <h2>📅 Available Events</h2>
+        <div th:if="${#lists.isEmpty(events)}" style="color:#90a4ae; text-align:center; padding:20px;">
+            No events available right now.
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap:18px;"
+             th:unless="${#lists.isEmpty(events)}">
+            <div th:each="e : ${events}" class="event-card">
+                <div class="event-card-header">
+                    <h3 th:text="${e.eventName}"></h3>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+                        <span class="badge badge-orange" th:text="${e.date}"></span>
+                        <span th:if="${e.eventCategory != null and !#strings.isEmpty(e.eventCategory)}"
+                              th:classappend="${e.eventCategory == 'Technical'} ? 'badge-tech' : 'badge-nontech'"
+                              class="badge" th:text="${e.eventCategory}"></span>
+                    </div>
+                </div>
+                <div class="event-card-body">
+                    <div class="event-meta" th:if="${e.venue != null and !#strings.isEmpty(e.venue)}">
+                        <span class="meta-icon">📍</span>
+                        <span th:text="${e.venue}"></span>
+                    </div>
+                    <div class="event-meta" th:if="${e.timing != null and !#strings.isEmpty(e.timing)}">
+                        <span class="meta-icon">🕐</span>
+                        <span th:text="${e.timing}"></span>
+                    </div>
+                    <div class="event-meta" th:if="${e.organizer != null and !#strings.isEmpty(e.organizer)}">
+                        <span class="meta-icon">🏛</span>
+                        <span th:text="${e.organizer}"></span>
+                    </div>
+                    <p class="event-desc" th:if="${e.description != null and !#strings.isEmpty(e.description)}"
+                       th:text="${e.description}"></p>
+                </div>
+                <div class="event-card-footer">
+                    <form method="post" th:action="@{/student/register-event}">
+                        <input type="hidden" name="eventName" th:value="${e.eventName}"/>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">
+                            ✅ Register for this Event
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Registrations -->
+    <div class="card">
+        <h2>📋 My Registrations</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Event Name</th><th>Registered On</th><th>Certificate</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${myRegistrations}">
+                        <td th:text="${r.eventName}"></td>
+                        <td><span class="badge badge-orange" th:text="${r.date}"></span></td>
+                        <td>
+                            <a th:href="@{/student/certificate/{ev}(ev=${r.eventName})}"
+                               class="btn btn-warning btn-sm">🏆 Certificate</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(myRegistrations)}">
+                        <td colspan="3" style="text-align:center; color:#90a4ae;">No registrations yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

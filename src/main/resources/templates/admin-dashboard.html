@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <span class="brand">🎓 Campus Event Management</span>
+    <div>
+        <span style="color:#c5cae9; font-size:0.9rem;">Welcome, Admin</span>
+        <a th:href="@{/admin/logout}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-danger"  th:text="${error}"></div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-num" th:text="${#lists.size(students)}">0</div>
+            <div class="stat-label">Total Students</div>
+        </div>
+        <div class="stat-card" style="border-top-color:#2e7d32;">
+            <div class="stat-num" th:text="${#lists.size(events)}">0</div>
+            <div class="stat-label">Total Events</div>
+        </div>
+        <div class="stat-card" style="border-top-color:#e65100;">
+            <div class="stat-num" th:text="${#lists.size(registrations)}">0</div>
+            <div class="stat-label">Registrations</div>
+        </div>
+        <div class="stat-card" style="border-top-color:#6a1b9a;">
+            <div class="stat-num" th:text="${#lists.size(feedbacks)}">0</div>
+            <div class="stat-label">Feedbacks</div>
+        </div>
+    </div>
+
+    <!-- Students Section -->
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h2 style="border:none; margin:0; padding:0;">👩‍🎓 Students</h2>
+            <a th:href="@{/admin/students/add}" class="btn btn-success btn-sm">+ Add Student</a>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reg No</th><th>Name</th><th>Department</th><th>Phone</th><th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="s : ${students}">
+                        <td><span class="badge badge-blue" th:text="${s.regNo}"></span></td>
+                        <td th:text="${s.name}"></td>
+                        <td th:text="${s.dept}"></td>
+                        <td th:text="${s.phone}"></td>
+                        <td>
+                            <a th:href="@{/admin/students/delete/{r}(r=${s.regNo})}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete this student?')">Delete</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(students)}">
+                        <td colspan="5" style="text-align:center; color:#90a4ae;">No students yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Events Section -->
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h2 style="border:none; margin:0; padding:0;">📅 Events</h2>
+            <a th:href="@{/admin/events/add}" class="btn btn-primary btn-sm">+ Add Event</a>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Event Name</th><th>Category</th><th>Date</th><th>Timing</th><th>Venue</th><th>Organizer</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="e : ${events}">
+                        <td th:text="${e.id}"></td>
+                        <td th:text="${e.eventName}"></td>
+                        <td>
+                            <span th:if="${e.eventCategory != null and !#strings.isEmpty(e.eventCategory)}"
+                                  th:classappend="${e.eventCategory == 'Technical'} ? 'badge-tech' : 'badge-nontech'"
+                                  class="badge" th:text="${e.eventCategory}"></span>
+                            <span th:if="${e.eventCategory == null or #strings.isEmpty(e.eventCategory)}" style="color:#90a4ae;">—</span>
+                        </td>
+                        <td><span class="badge badge-orange" th:text="${e.date}"></span></td>
+                        <td th:text="${e.timing != null ? e.timing : '—'}"></td>
+                        <td th:text="${e.venue != null ? e.venue : '—'}"></td>
+                        <td th:text="${e.organizer != null ? e.organizer : '—'}"></td>
+                        <td>
+                            <a th:href="@{/admin/events/delete/{id}(id=${e.id})}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete this event?')">Delete</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(events)}">
+                        <td colspan="8" style="text-align:center; color:#90a4ae;">No events yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Registrations Section -->
+    <div class="card">
+        <h2>📋 Registrations</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Event Name</th><th>Reg No</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${registrations}">
+                        <td th:text="${r.id}"></td>
+                        <td th:text="${r.eventName}"></td>
+                        <td><span class="badge badge-blue" th:text="${r.regNo}"></span></td>
+                        <td th:text="${r.date}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(registrations)}">
+                        <td colspan="4" style="text-align:center; color:#90a4ae;">No registrations yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Feedbacks Section -->
+    <div class="card">
+        <h2>⭐ Feedbacks</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Event</th><th>Rating</th><th>Comments</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="f : ${feedbacks}">
+                        <td th:text="${f.id}"></td>
+                        <td th:text="${f.eventName}"></td>
+                        <td>
+                            <span class="stars">
+                                <span th:text="${'★'.repeat(f.rating) + '☆'.repeat(5 - f.rating)}"></span>
+                            </span>
+                            <span style="font-size:0.8rem; color:#607d8b;" th:text="' (' + f.rating + '/5)'"></span>
+                        </td>
+                        <td th:text="${f.comments}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(feedbacks)}">
+                        <td colspan="4" style="text-align:center; color:#90a4ae;">No feedbacks yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

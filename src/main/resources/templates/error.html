@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Error</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav class="navbar">
+    <span class="brand">🎓 Campus Event Management</span>
+    <a th:href="@{/}">← Home</a>
+</nav>
+<div class="container-sm">
+    <div class="card" style="text-align:center;">
+        <div style="font-size:3rem; margin-bottom:16px;">⚠️</div>
+        <h2>Something went wrong</h2>
+        <div class="alert alert-danger" th:text="${error}" style="margin-top:16px;">An error occurred.</div>
+        <a th:href="@{/}" class="btn btn-primary" style="margin-top:16px;">Go Home</a>
+    </div>
+</div>
+</body>
+</html>

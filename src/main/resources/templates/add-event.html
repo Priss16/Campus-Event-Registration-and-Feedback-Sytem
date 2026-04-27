@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Add Event</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <span class="brand">🎓 Campus Event Management</span>
+    <a th:href="@{/admin/dashboard}">← Dashboard</a>
+</nav>
+
+<div class="container-sm" style="max-width:560px;">
+    <div class="card">
+        <h2>📅 Add New Event</h2>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <form method="post" th:action="@{/admin/events/add}" id="addEventForm">
+
+            <div class="form-group">
+                <label>Event Name *</label>
+                <input type="text" name="eventName" class="form-control"
+                       placeholder="e.g. Tech Fest 2025" required/>
+            </div>
+
+            <div class="form-group">
+                <label>Event Category *</label>
+                <select name="eventCategory" class="form-control" required>
+                    <option value="" disabled selected>-- Select Category --</option>
+                    <option value="Technical">🖥️ Technical</option>
+                    <option value="Non-Technical">🎨 Non-Technical</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex:1;">
+                    <label>Event Date (dd-mm-yyyy) *</label>
+                    <input type="text" name="date" id="eventDate" class="form-control"
+                           placeholder="e.g. 25-12-2025"
+                           pattern="\d{2}-\d{2}-\d{4}" title="Format: dd-mm-yyyy"
+                           required oninput="validateDate(this)"/>
+                    <small id="dateMsg" class="field-hint"></small>
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label>Event Timing *</label>
+                    <input type="text" name="timing" class="form-control"
+                           placeholder="e.g. 10:00 AM – 4:00 PM" required/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Venue *</label>
+                <input type="text" name="venue" class="form-control"
+                       placeholder="e.g. Main Auditorium, Block A" required/>
+            </div>
+
+            <div class="form-group">
+                <label>Organizer / Department</label>
+                <input type="text" name="organizer" class="form-control"
+                       placeholder="e.g. Dept. of Computer Science"/>
+            </div>
+
+            <div class="form-group">
+                <label>Event Description</label>
+                <textarea name="description" class="form-control" rows="3"
+                          placeholder="Brief description of the event..." maxlength="500"
+                          style="resize:vertical;"></textarea>
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:8px;">
+                <button type="submit" class="btn btn-primary" style="flex:1;" id="submitBtn">Add Event</button>
+                <a th:href="@{/admin/dashboard}" class="btn btn-secondary" style="flex:1; text-align:center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function validateDate(input) {
+    const msg = document.getElementById('dateMsg');
+    const btn = document.getElementById('submitBtn');
+    const val = input.value;
+    if (val.length < 10) { msg.textContent = ''; msg.className = 'field-hint'; return; }
+
+    const parts = val.split('-');
+    if (parts.length !== 3) return;
+    const [dd, mm, yyyy] = parts.map(Number);
+    const entered = new Date(yyyy, mm - 1, dd);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (isNaN(entered.getTime())) {
+        msg.textContent = '⚠ Invalid date.';
+        msg.className = 'field-hint hint-error';
+        btn.disabled = true;
+        return;
+    }
+    if (entered <= today) {
+        msg.textContent = '⚠ Event date must be a future date (not today or past).';
+        msg.className = 'field-hint hint-error';
+        btn.disabled = true;
+        input.style.borderColor = '#e53935';
+    } else {
+        msg.textContent = '✓ Valid future date.';
+        msg.className = 'field-hint hint-ok';
+        btn.disabled = false;
+        input.style.borderColor = '#43a047';
+    }
+}
+</script>
+
+</body>
+</html>
