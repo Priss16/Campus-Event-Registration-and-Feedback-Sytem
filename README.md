@@ -83,7 +83,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-Then open your browser and go to: **http://localhost:8080**
+Then open your browser and go to: **http://localhost:7070**
 
 The SQLite database file `campus_events.db` will be created automatically in the project root.
 
@@ -125,7 +125,7 @@ The SQLite database file `campus_events.db` will be created automatically in the
 | Rating      | Integer between 1 and 5                  |
 
 
-H2 Console: http://localhost:8080/h2-console
+H2 Console: http://localhost:7070/h2-console
 JDBC URL: jdbc:h2:file:./data/campuseventsdb
 User: sa
 Password: password
